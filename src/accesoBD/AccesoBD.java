@@ -1,13 +1,15 @@
 package accesoBD;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.naming.spi.DirStateFactory.Result;
+
 public class AccesoBD {
-    
+
     private final String URL;
     private final String USR;
     private final String PSWD;
@@ -23,7 +25,7 @@ public class AccesoBD {
         statement = null;
     }
 
-    public boolean crearConexion(){
+    public boolean crearConexion() {
         try {
             conexion = DriverManager.getConnection(URL, USR, PSWD);
         } catch (SQLException e) {
@@ -32,7 +34,7 @@ public class AccesoBD {
         return true;
     }
 
-    public boolean cerrarConexion(){
+    public boolean cerrarConexion() {
         if (conexion != null) {
             try {
                 conexion.close();
@@ -45,7 +47,7 @@ public class AccesoBD {
         }
     }
 
-    public boolean crearStatement(){
+    public boolean crearStatement() {
 
         try {
             statement = conexion.createStatement();
@@ -56,8 +58,8 @@ public class AccesoBD {
 
     }
 
-    public boolean cerrarStatement(){
-        if (statement != null){
+    public boolean cerrarStatement() {
+        if (statement != null) {
             try {
                 statement.close();
             } catch (SQLException e) {
@@ -70,6 +72,53 @@ public class AccesoBD {
 
     }
 
-    
+    public ResultSet ejecutarQuery(String query) throws SQLException {
+        ResultSet resultSet = null;
+        try {
+            resultSet = statement.executeQuery(query);
+            return resultSet;
+        } catch (SQLException e) {
+            return null;
+        } finally {
+            if (resultSet != null)
+                resultSet.close();
+        }
+    }
+
+    public int ejecutarUpdate(String update) {
+        try {
+            return statement.executeUpdate(update);
+        } catch (SQLException e) {
+            return -1;
+        }
+    }
+
+    public String getURL() {
+        return URL;
+    }
+
+    public String getUSR() {
+        return USR;
+    }
+
+    public String getPSWD() {
+        return PSWD;
+    }
+
+    public Connection getConexion() {
+        return conexion;
+    }
+
+    public void setConexion(Connection conexion) {
+        this.conexion = conexion;
+    }
+
+    public Statement getStatement() {
+        return statement;
+    }
+
+    public void setStatement(Statement statement) {
+        this.statement = statement;
+    }
 
 }
